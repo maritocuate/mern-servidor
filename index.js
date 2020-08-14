@@ -15,6 +15,9 @@ app.get('/', (req, res)=>{
     res.send('hola mundo')
 })
 
+//importar rutas
+app.use('./api/usuarios', require('./routes/usuarios'))
+
 //start app
 app.listen(PORT, ()=>{
     console.log(`El servidor esta funcionando en el puerto ${PORT}`)
