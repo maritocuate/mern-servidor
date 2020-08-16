@@ -9,7 +9,7 @@ const { check } = require('express-validator')
 router.post('/', 
     [
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-        check('email', 'Agrega un email valido').isEmpty(),
+        check('email', 'Agrega un email valido').isEmail(),
         check('password', 'El password debe tener al menos 6 c.').isLength({min:6})
     ],
     usuarioController.crearUsuario
