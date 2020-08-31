@@ -55,3 +55,36 @@ exports.obtenerTareas = async(req, res)=>{
         res.status(500).send('Hubo un error')
     }
 }
+
+exports.actualizarTarea = async(req, res) => {
+    try{
+        const { proyecto, nombre, estado } = req.body
+
+        //revisar si la tarea existe
+        let tarea = await Tarea.findById(req.params.id)
+        if(!tarea) {
+            return res.status(404).json({msg:'tarea no encontrado'})
+        }
+
+        const existeProyecto = await Proyecto.findById(proyecto)
+        if(!existeProyecto) {
+            return res.status(404).json({msg:'proyecto no encontrado'})
+        }
+
+        //revisar si el proyecto actual pertenece al usuario autenticado
+        if(existeProyecto.creador.toString() !== req.usuario.id) return res.status(401).json({msg:'no autorizado'})
+
+        //crear un bojeto con la nueva informacion
+        const nuevaTarea = {}
+        if(nombre) nuevaTarea.nombre = nombre
+        if(estado) nuevaTarea.estado = estado
+
+        //guarda tarea
+        tarea = await Tarea.findOneAndUpdate({_id: req.params.id }, nuevaTarea, {new: true})
+
+        res.json({ tarea })
+
+    }catch(error){
+        console.log(error)
+    }
+}
